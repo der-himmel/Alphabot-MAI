@@ -1,5 +1,4 @@
 @startuml
-top to bottom direction
 class Server #FBF1FB{
    {method} getImage()
    {method} void processImage()
@@ -31,11 +30,12 @@ class Customer #F6F2EA{
    {method} receiveOrder()
 }
 
+Customer .up.> Server
 Server -down-> Robot
 Server -down-> Dispencer
 Robot -up-o Camera
 Customer -up-o Camera
-Camera <-left- Server
-Dispencer .right.> Robot
-Robot .right.> Customer
+Camera <-up- Server
+Dispencer .left.> Robot
+Robot .left.> Customer
 @enduml
