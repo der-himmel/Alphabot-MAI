@@ -1,0 +1,15 @@
+@startuml
+actor Customer #F9D99A
+participant Server #CA99C6
+participant Robot #99A3CA
+participant Camera #97DD8E
+participant Dispencer #BCDEEE
+
+
+Customer --> Server : клиент делает заказ
+Server <-- Camera : получение изображения
+Server --> Robot : отправка роботу указаний
+Server --> Dispencer : отправка указаний дозатору
+Dispencer --> Robot : розлив напитка
+Robot --> Customer : доставка напитка клиенту
+@enduml
