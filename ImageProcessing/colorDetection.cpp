@@ -17,7 +17,7 @@ int hminB = 68, sminB = 137, vminB = 137;
 int hmaxB = 122, smaxB = 255, vmaxB = 255;
 
 void main(){
-    string path = "C:\\Users\\aa\\CLionProjects\\opencvtest\\test_img.png";
+    string path = "C:\\Users\\aa\\CLionProjects\\opencvtest\\test_img.png"; //change the path to your image
     Mat img = imread(path);
 
     cvtColor(img, imgHSV, COLOR_BGR2HSV);
