@@ -1,5 +1,8 @@
 #include <iostream>
 #include <opencv2>
+#include "Robot.h"
+#include "RobotContr.h"
+#include "Cam.h"
 
 class Server{
 public:
@@ -9,31 +12,25 @@ public:
     void robotControl(); //makes the robot move
 };
 
-class Camera{
-public:
-    void cHandleCommunication(); //handles communication with the server
-};
-
 class Dispencer{
+private:
+    float x, y; //constant coordinates of the dispencer
 public:
-    const float x, y; //constant coordinates of the dispencer
     void dHandleCommunication(); //handles communication with the server
 };
 
-class Robot{
-public:
-    float x, y; //coordinates
-    void rHandleCommunication(); //handles communication with the server
-};
-
 class Customer{
-public:
+private:
     float x, y; //coordinates
+public:
     void requestOrder(); //makes an order request to the server
     void receiveOrder(); //receives order from robot
 };
 
 int main() {
+    Cam *cam = new Cam(0);
+    Robot *robot = new Robot();
+    RobotContr *rcontr = new RobotContr(cam, robot);
     std::cout << "Not working yet..." << std::endl;
     return 0;
 }
