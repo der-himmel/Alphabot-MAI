@@ -1,26 +1,25 @@
-#include "Robot_contr.h"
-#include "robot.h"
+#include "RobotContr.h"
+#include "Robot.h"
 #include "opencv2/opencv.hpp"
 #include <iostream>
 
 using namespace std;
 using namespace cv;
 
-Robot_control::Robot_control(Camera* cam, Robot* bot) {
+RobotContr::RobotContr(Camera* cam, Robot* bot) {
   this->status = 0;
   this->robot = bot;
   this->cam = cam;
 }
 
-void Robot_control::start() {
-  for (;;) {
-    this->cam->updateImage();
-    piloting();
-    if (waitKey(33) == 27) break;
+void RobotContr::start() {
+  for (...) {
+    this->cam->updateFrame();
+    driving();
   }
 }
 
-void Robot_control::piloting() {
+void RobotContr::driving() {
   switch (this->status) {
       
   case 0:
