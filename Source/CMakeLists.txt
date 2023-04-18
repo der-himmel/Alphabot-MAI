@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 project(Alphabot)
 set(CMAKE_CXX_STANDARD 23)
+find_package( OpenCV REQUIRED)
 
 set(Alphabot-MAI main.cpp)
-
-add_executable(Alphabot Alphabot-MAI/main.cpp)
+include_directories( ${OpenCV_INCLUDE_DIRS})
+set(SOURCES Alphabot-MAI/main.cpp Cam.cpp Robot.cpp RobotContr.cpp)
+add_executable( main ${SOURCES})
+target_link_libraries( main ${OpenCV_LIBS})
