@@ -13,5 +13,5 @@ private:
 public:
   Robot_control(Camera* cam, Robot* bot);
   void start();
-  void piloting();
+  void driving();
 };
