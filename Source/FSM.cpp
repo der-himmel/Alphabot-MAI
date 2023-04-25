@@ -23,24 +23,19 @@ void RobotContr::driving() {
   switch (this->status) {
       
   case 0:
-    cout << "Waiting...";
+    cout << "Idle";
     this->status = 1;
       
   case 1:
-    cout << "Getting drink...";
+    cout << "Getting drink";
     this->status = 2;
       
   case 2:
-    cout << "Robot is moving...";
+    cout << "Robot is moving";
     this->status = 3;
       
   case 3:
-    cout << "Robot rotating...";
-    this->status = 4;
-      
-  case 4:
-    cout << "Order finished";
-    this->status = 0;
-      
+    cout << "Robot rotating";
+    this->status = 0;    
   }
 }
