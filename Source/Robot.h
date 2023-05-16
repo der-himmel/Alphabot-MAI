@@ -1,18 +1,15 @@
 #pragma once
-#include "Position.h"
+#include <string>
 
-class Robot {
+class Robot 
+{
 public:
-  void moveForward(){
-    //doing smth...
-  };
-  void setAngle(){
-    //doing smth...
-  };
-  void moveBack(){
-    //doing smth...
-  };
-  void stop(){
-    //doing smth...
-  };
+    Robot(std::string mqtt_host, int mqtt_port);
+
+    void moveForward();
+    void rotateLeft();
+    void rotateRight();
+    void waitingMode();
+
+    void sendtoserver(const char* data);
 };
