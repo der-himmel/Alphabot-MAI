@@ -5,7 +5,8 @@
 
 using namespace cv;
 
-class Cam{
+class Cam 
+{
 private:
     Mat img, res;
     Mat imgHSV, maskRED, maskBLUE, maskREQUEST, maskROBOT;
@@ -13,16 +14,22 @@ private:
     Point2i frontR, backR, midREQ, midROBOT;
     Rect rectFRONT, rectBACK, rectREQ;
 
+    Scalar minReqColor(int hminREQ, int sminREQ, int vminREQ);
+    Scalar maxReqColor(int hmaxREQ, int smaxREQ, int vmaxREQ);
+
     VideoCapture cap;
     Mat getFrame();
     Mat findRobot(Mat frame);
-    Point2i findReqMid(Mat frame);
+    Point2i findReqMid(Mat frame, Scalar& minReqColor, Scalar& maxReqColor);
     Point2i calcRobotMid(Point2i frontR, Point2i backR);
 
 public:
+    int dist;
+    double angle;
+
     Cam(int i);
-    void updateFrame();
+    void update();
     int calcDist(Point2i midRobot, Point2i midReq);
-    int calcAngle(Point2i frontR, Point2i backR, Point2i midRobot, Point2i midReq);
+    double calcAngle(Point2i frontR, Point2i backR, Point2i midRobot, Point2i midReq);
     ~Cam();
 };
