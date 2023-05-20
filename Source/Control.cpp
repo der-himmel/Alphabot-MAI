@@ -18,7 +18,7 @@ void Control::operating()
 	while(1)
 	{
 		cam->update();
-		operating();
+		moving();
 	}
 }
 
