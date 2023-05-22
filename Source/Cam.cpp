@@ -8,13 +8,17 @@ using namespace cv;
 using namespace std;
 
 
-Cam::Cam(int i) 
+Cam::Cam(int i)
 {
-    this->cap.open(i);
+    cap.open(i);
 
     if (!this->cap.isOpened()) 
     {
         cout << "Error. Can't open the video source." << endl;
+    }
+    else
+    {
+        cout << "Video source " << i << " opened successfully." << endl;
     }
 }
 
@@ -27,26 +31,21 @@ Mat Cam::getFrame()
 void Cam::update() 
 {
     img = getFrame();
-    
-    res = img.clone();
-    res = findRobot(res);
 
-    midREQ = findReqMid(res, minReqColor, maxReqColor);
+    img = findRobot(img);
+    img = findReqMid(img, minReqColor, maxReqColor);
     midROBOT = calcRobotMid(frontR, backR);
 
     dist = calcDist(midROBOT, midREQ);
     angle = calcAngle(frontR, backR, midROBOT, midREQ);
 
-    cout << dist << "; " << angle;
-    system("cls");
-
     imshow("Image", img);
-    imshow("Output", res);
+    waitKey(1);
 }
 
-Mat Cam::findRobot(Mat res) 
+Mat Cam::findRobot(Mat img)
 {
-    cvtColor(res, imgHSV, COLOR_BGR2HSV);
+    cvtColor(img, imgHSV, COLOR_BGR2HSV);
 
     inRange(imgHSV, Scalar(162, 137, 137), Scalar(172, 255, 255), maskRED);
     inRange(imgHSV, Scalar(68, 137, 137), Scalar(122, 255, 255), maskBLUE);
@@ -64,13 +63,13 @@ Mat Cam::findRobot(Mat res)
                 int count = floodFill(maskRED, Point(x, y), Scalar(200), &rectFRONT);
                 if (rectFRONT.width >= 10 && rectFRONT.height >= 10) 
                 {
-                    rectangle(res, rectFRONT, Scalar(255, 0, 255, 4), 2);
+                    rectangle(img, rectFRONT, Scalar(255, 0, 255, 4), 2);
                 }
             }
         }
     }
-    circle(res, frontR, 5, Scalar(255, 255, 255), -1);
-    putText(res, "FRONT", Point(frontR.x + 10, frontR.y + 20), FONT_HERSHEY_DUPLEX, 0.8, CV_RGB(255, 255, 255), 2);
+    circle(img, frontR, 5, Scalar(255, 255, 255), -1);
+    putText(img, "FRONT", Point(frontR.x + 10, frontR.y + 20), FONT_HERSHEY_DUPLEX, 0.8, CV_RGB(255, 255, 255), 2);
 
 
     Moments mBack = moments(maskBLUE, true);
@@ -86,26 +85,29 @@ Mat Cam::findRobot(Mat res)
                 int count = floodFill(maskBLUE, Point(x, y), Scalar(200), &rectBACK);
                 if (rectBACK.width >= 10 && rectBACK.height >= 10) 
                 {
-                    rectangle(res, rectBACK, Scalar(255, 0, 255, 4), 2);
+                    rectangle(img, rectBACK, Scalar(255, 0, 255, 4), 2);
                 }
             }
         }
     }
-    circle(res, backR, 5, Scalar(255, 255, 255), -1);
-    putText(res, "BACK", Point(backR.x + 10, backR.y - 20), FONT_HERSHEY_DUPLEX, 0.8, CV_RGB(255, 255, 255), 2);
+    circle(img, backR, 5, Scalar(255, 255, 255), -1);
+    putText(img, "BACK", Point(backR.x + 10, backR.y - 20), FONT_HERSHEY_DUPLEX, 0.8, CV_RGB(255, 255, 255), 2);
 
-    return res;
+    return img;
 }
 
-Point2i Cam::findReqMid(Mat res, Scalar &minReqColor, Scalar& maxReqColor)
+Mat Cam::findReqMid(Mat img, Scalar &minReqColor, Scalar& maxReqColor)
 {
-    inRange(imgHSV, minReqColor, maxReqColor, maskREQUEST);
+    inRange(img, minReqColor, maxReqColor, maskREQUEST);
 
     Moments mReq = moments(maskREQUEST, true);
     midREQ.x = mReq.m10 / mReq.m00;
     midREQ.y = mReq.m01 / mReq.m00;
 
-    return midREQ;
+    circle(img, midREQ, 5, Scalar(255, 255, 255), -1);
+    putText(img, "REQ", Point(midREQ.x + 10, midREQ.y - 20), FONT_HERSHEY_DUPLEX, 0.8, CV_RGB(255, 255, 255), 2);
+
+    return img;
 }
 
 Point2i Cam::calcRobotMid(Point2i frontR, Point2i backR) 
@@ -122,7 +124,9 @@ int Cam::calcDist(Point2i midRobot, Point2i midReq)
 
 double Cam::calcAngle(Point2i frontR, Point2i backR, Point2i midRobot, Point2i midReq) 
 {
-    double cos = ((frontR.x - backR.x) * (midREQ.x - midROBOT.x) + (frontR.y - backR.y) * (midREQ.y - midROBOT.y)) / (sqrt((frontR.x - backR.x) * (frontR.x - backR.x) + (frontR.y - backR.y) * (frontR.y - backR.y)) * sqrt((midREQ.x - midROBOT.x) * (midREQ.x - midROBOT.x) + (midREQ.y - midROBOT.y) * (midREQ.y - midROBOT.y)));
-    double angle = acos(cos) * 180 / 3.14;
+    double cosA = (frontR.x - backR.x) / (sqrt((frontR.x - backR.x) * (frontR.x - backR.x) + (frontR.y - backR.y) * (frontR.y - backR.y)));
+    double cosB = (midREQ.x - midROBOT.x) / (sqrt((midREQ.x - midROBOT.x) * (midREQ.x - midROBOT.x) + (midREQ.y - midROBOT.y) * (midREQ.y - midROBOT.y)));
+
+    double angle = (acos(cosA) - acos(cosB)) * 180.0 / 3.141592653589793238463;
     return angle;
 }
