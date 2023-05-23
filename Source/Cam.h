@@ -9,7 +9,7 @@ class Cam
 {
 private:
     Mat img, result;
-    Mat imgHSV, maskRED, maskBLUE, maskREQUEST, maskROBOT;
+    Mat imgHSV, maskRED, maskBLUE, maskREQUEST, maskROBOT, maskCAL;
 
     Point2i frontR, backR, midREQ, midROBOT;
     Rect rectFRONT, rectBACK, rectREQ;
@@ -32,6 +32,7 @@ public:
 
     Cam(int i);
     void update();
+    void calibrate();
     int calcDist(Point2i midRobot, Point2i midReq);
     double calcAngle(Point2i frontR, Point2i backR, Point2i midRobot, Point2i midReq);
     ~Cam();
