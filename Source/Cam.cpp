@@ -130,3 +130,32 @@ double Cam::calcAngle(Point2i frontR, Point2i backR, Point2i midRobot, Point2i m
     double angle = (acos(cosA) - acos(cosB)) * 180.0 / 3.141592653589793238463;
     return angle;
 }
+
+void Cam::calibrate()
+{
+    int hminR, sminR, vminR;
+    int hmaxR,smaxR, vmaxR;
+
+    double alpha = 0.3, beta = 0.7;
+
+    namedWindow("Trackbars", (640, 200));
+    createTrackbar("Hue Min", "Trackbars", &hminR, 179);
+    createTrackbar("Hue Max", "Trackbars", &hmaxR, 179);
+    createTrackbar("Sat Min", "Trackbars", &sminR, 255);
+    createTrackbar("Sat Max", "Trackbars", &smaxR, 255);
+    createTrackbar("Val Min", "Trackbars", &vminR, 255);
+    createTrackbar("Val Max", "Trackbars", &vmaxR, 255);
+
+    while (true) 
+    {
+        img = getFrame();
+        cvtColor(img, imgHSV, COLOR_BGR2HSV);
+
+        inRange(imgHSV, Scalar(hminR, sminR, vminR), Scalar(hmaxR, smaxR, vmaxR), maskCAL);       
+        cvtColor(maskCAL, maskCAL, COLOR_GRAY2BGR);
+        addWeighted(img, alpha, maskCAL, beta, 0.0, img);
+
+        imshow("Mask", img);
+        waitKey(1);
+    }
+}
