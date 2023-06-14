@@ -96,14 +96,34 @@ Mat Cam::findRobot(Mat img)
     return img;
 }
 
-Mat Cam::findReqMid(Mat img, Scalar &minReqColor, Scalar& maxReqColor)
+Mat Cam::findReqMid(Mat img, Scalar& minReqColor, Scalar& maxReqColor)
 {
-    inRange(img, minReqColor, maxReqColor, maskREQUEST);
+    cvtColor(img, imgHSV, COLOR_BGR2HSV);
+
+    inRange(imgHSV, minReqColor, maxReqColor, maskREQUEST);
 
     Moments mReq = moments(maskREQUEST, true);
     midREQ.x = mReq.m10 / mReq.m00;
     midREQ.y = mReq.m01 / mReq.m00;
 
+    dilate(maskREQUEST, maskREQUEST, Mat(), Point(-1, -1), 3);
+    erode(maskREQUEST, maskREQUEST, Mat(), Point(-1, -1), 1);
+
+    for (int y = 0; y < maskREQUEST.rows; y++)
+    {
+        for (int x = 0; x < maskREQUEST.cols; x++)
+        {
+            int value = maskREQUEST.at<uchar>(y, x);
+            if (value == 255)
+            {
+                int count = floodFill(maskREQUEST, Point(x, y), Scalar(200), &rectREQ);
+                if (rectREQ.width >= 10 && rectREQ.height >= 10)
+                {
+                    rectangle(img, rectREQ, Scalar(255, 0, 255, 4), 2);
+                }
+            }
+        }
+    }
     circle(img, midREQ, 5, Scalar(255, 255, 255), -1);
     putText(img, "REQ", Point(midREQ.x + 10, midREQ.y - 20), FONT_HERSHEY_DUPLEX, 0.8, CV_RGB(255, 255, 255), 2);
 
