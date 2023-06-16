@@ -4,18 +4,12 @@ left to right direction
 :Сервер: #CA99C6;line:purple;line.bold;text:purple
 :Робот: #99A3CA;line:35478C;line.bold;text:35478C
 :Камера: #97DD8E;line:43813B;line.bold;text:43813B
-:Заказчик: #F9D99A;line:9F6923;line.bold;text:9F6923
-:Дозатор: #BCDEEE;line:3B6C83;line.bold;text:3B6C83
 
 rectangle "Методы Сервера" #FBF1FB{
    usecase "Принять изображение с камеры" as SUC0  #FFFFFF
-   usecase "Принять запрос заказчика" as SUC1 #FFFFFF
-   usecase "Определить координаты робота" as SUC2 #FFFFFF
-   usecase "Распознать координаты заказчика" as SUC3 #FFFFFF
-   usecase "Вернуть робота на базу" as SUC4 #FFFFFF
-   usecase "Отдать команду розлива напитка" as SUC5 #FFFFFF
-   usecase "Построить маршрут до заказчика" as SUC6 #FFFFFF
-   usecase "Разбить маршрут на отдельные команды" as SUC7 #FFFFFF
+   usecase "Определить координаты робота" as SUC1 #FFFFFF
+   usecase "Распознать координаты заказчика" as SUC2 #FFFFFF
+   usecase "Провести робота до заказчика" as SUC3 #FFFFFF
 }
 
 rectangle "Методы Робота" #EBEEF7{
@@ -27,30 +21,15 @@ rectangle "Методы Камеры" #F0F6EF{
    usecase "Передать изображение на сервер" as СUC0 #FFFFFF
 }
 
-rectangle "Методы Заказчика" #F6F2EA{
-   usecase "Оформить заказ" as ZUC0 #FFFFFF
-}
-
-rectangle "Методы Дозатора" #EBF2F5{
-   usecase "Налить напиток" as DUC0 #FFFFFF
-}
 
 Сервер --> SUC0
 Сервер --> SUC1
 Сервер --> SUC2
 Сервер --> SUC3
-Сервер --> SUC4
-Сервер --> SUC5
-Сервер --> SUC6
-Сервер --> SUC7
 
 Робот --> RUC0
 Робот --> RUC1
 
 Камера --> СUC0
-
-Заказчик --> ZUC0
-
-Дозатор --> DUC0
 
 @enduml
