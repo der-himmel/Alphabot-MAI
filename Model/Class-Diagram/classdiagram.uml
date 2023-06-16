@@ -1,41 +1,50 @@
 @startuml
-class Server #FBF1FB{
-   {method} getImage()
-   {method} void processImage()
-   {method} void robotControl()
-   {method} void handleOrder()
-   {method} void routeBuild()
+class Control #FBF1FB{
+   {method} void opreating()
+   {method} void moving()
 }
 
 class Robot #EBEEF7{
-   {field} float x
-   {field} float y
-   {method} rHandleCommunication()
-   {method} move()
+    {field} int port
+    {field} char* mqtt_host
+
+    {method} void moveForward();
+    {method} void rotateLeft();
+    {method} void rotateRight();
+    {method} void waitingMode();
+    {method} void sendtoserver(const char* data);
 }
 
-class Camera #F0F6EF{
-   {method} cHandleCommunication()
+class Cam #F0F6EF{
+    {field} private:
+    {field} Mat img, result;
+    {field} Mat imgHSV, maskRED, maskBLUE, maskREQUEST, maskROBOT, maskCAL;
+
+    {field} Point2i frontR, backR, midREQ, midROBOT;
+    {field} Rect rectFRONT, rectBACK, rectREQ;
+
+    {field} Scalar minReqColor(int hminREQ, int sminREQ, int vminREQ);
+    {field} Scalar maxReqColor(int hmaxREQ, int smaxREQ, int vmaxREQ);
+
+    {field} public:
+    {field} int dist;
+    {field} double angle;
+        
+    {method} private:
+    {method} Mat getFrame();
+
+    {method} Mat findRobot(Mat frame);
+    {method} Mat findReqMid(Mat frame, Scalar& minReqColor, Scalar& maxReqColor);
+    {method} Point2i calcRobotMid(Point2i frontR, Point2i backR);
+
+    {method} public:
+    {method} void update();
+    {method} void calibrate();
+
+    {method} int calcDist(Point2i midRobot, Point2i midReq);
+    {method} double calcAngle(Point2i frontR, Point2i backR, Point2i midRobot, Point2i midReq);
 }
 
-class Dispencer #EBF2F5{
-   {method} dHandleCommunication()
-   {method} pourDrink()
-}
-
-class Customer #F6F2EA{
-   {field} float x
-   {field} float y
-   {method} requestOrder()
-   {method} receiveOrder()
-}
-
-Customer .up.> Server
-Server -down-> Robot
-Server -down-> Dispencer
-Robot -up-o Camera
-Customer -up-o Camera
-Camera <-up- Server
-Dispencer .left.> Robot
-Robot .left.> Customer
+Control -down-> Robot
+Control <--> Cam
 @enduml
